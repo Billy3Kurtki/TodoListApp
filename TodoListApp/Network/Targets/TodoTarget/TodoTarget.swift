@@ -5,7 +5,7 @@
 //  Created by Кирилл Казаков on 23.05.2025.
 //
 
-enum TodoTargetTarget {
+enum TodoTarget {
     case getTodos
 
     var url: String {

@@ -1,0 +1,92 @@
+//
+//  TodoListPresenter.swift
+//  TodoListApp
+//
+//  Created by Кирилл Казаков on 23.05.2025.
+//
+
+import UIKit
+
+protocol ITodoListPresenter: AnyObject {
+    
+    var view: ITodoListView? { get set }
+    var isLoading: Bool { get }
+    var filteredTodos: [TodoDTO] { get }
+    func viewDidLoad()
+    func pullToRefresh()
+    func searchTextChanged(_ text: String)
+    func todoDidTap(at indexPath: IndexPath)
+    func newTodoButtonDidTap()
+}
+
+final class TodoListPresenter {
+    
+    // Dependencies
+    weak var view: ITodoListView?
+    private let interactor: ITodoListInteractor
+    private let router: ITodoListRouter
+    
+    // Properties
+    private var todos = [TodoDTO]()
+    private(set) var filteredTodos = [TodoDTO]()
+    private(set) var isLoading = false
+    private var searchText = ""
+    
+    // MARK: - Initialization
+    
+    init(_ interactor: ITodoListInteractor,
+         _ router: ITodoListRouter) {
+        self.interactor = interactor
+        self.router = router
+    }
+    
+    // MARK: - Private Methods
+    
+    private func fetchData() {
+        isLoading = true
+        view?.reloadData()
+        
+        interactor.getTodos(from: .network) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let todos):
+                self.todos = todos
+                self.filteredTodos = !self.searchText.isEmpty ? todos.filter { $0.title.contains(self.searchText) } : todos
+                self.isLoading = false
+                self.view?.reloadData()
+            case .failure(let error):
+                self.view?.showAlert(with: error)
+            }
+        }
+    }
+}
+
+// MARK: - ITodoListPresenter
+
+extension TodoListPresenter: ITodoListPresenter {
+    
+    func viewDidLoad() {
+        fetchData()
+    }
+    
+    func pullToRefresh() {
+        fetchData()
+    }
+    
+    // TODO: Добавить задержку в 1 секунду
+    func searchTextChanged(_ text: String) {
+        searchText = text.lowercased()
+        filteredTodos = !searchText.isEmpty ? todos.filter { $0.title.lowercased().contains(searchText) } : todos
+        view?.reloadData()
+    }
+    
+    func todoDidTap(at indexPath: IndexPath) {
+        print("todoDidTap")
+        let todo = filteredTodos[indexPath.row]
+        try? router.openTodoDetailModule(with: todo)
+    }
+    
+    func newTodoButtonDidTap() {
+        print("newTodoButtonDidTap()")
+    }
+}

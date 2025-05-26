@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0866DAB82DE1070C00A9D92B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0866DAB72DE1070C00A9D92B /* SnapKit */; };
+		0866DABD2DE1072400A9D92B /* UIView-Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 0866DABC2DE1072400A9D92B /* UIView-Shimmer */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		0866DA632DE0E81800A9D92B /* TodoListApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoListApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0866DAB82DE1070C00A9D92B /* SnapKit in Frameworks */,
+				0866DABD2DE1072400A9D92B /* UIView-Shimmer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,8 @@
 			);
 			name = TodoListApp;
 			packageProductDependencies = (
+				0866DAB72DE1070C00A9D92B /* SnapKit */,
+				0866DABC2DE1072400A9D92B /* UIView-Shimmer */,
 			);
 			productName = TodoListApp;
 			productReference = 0866DA632DE0E81800A9D92B /* TodoListApp.app */;
@@ -107,6 +116,10 @@
 			);
 			mainGroup = 0866DA5A2DE0E81800A9D92B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0866DAB62DE1070C00A9D92B /* XCRemoteSwiftPackageReference "SnapKit" */,
+				0866DABB2DE1072400A9D92B /* XCRemoteSwiftPackageReference "UIView-Shimmer" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0866DA642DE0E81800A9D92B /* Products */;
 			projectDirPath = "";
@@ -337,6 +350,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0866DAB62DE1070C00A9D92B /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		0866DABB2DE1072400A9D92B /* XCRemoteSwiftPackageReference "UIView-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/omerfarukozturk/UIView-Shimmer";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0866DAB72DE1070C00A9D92B /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0866DAB62DE1070C00A9D92B /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		0866DABC2DE1072400A9D92B /* UIView-Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0866DABB2DE1072400A9D92B /* XCRemoteSwiftPackageReference "UIView-Shimmer" */;
+			productName = "UIView-Shimmer";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0866DA5B2DE0E81800A9D92B /* Project object */;
 }

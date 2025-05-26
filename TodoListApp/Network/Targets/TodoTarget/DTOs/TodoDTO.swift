@@ -11,28 +11,30 @@ struct TodoDTO: Decodable {
     
     // Properties
     let id: Int
-    let title: String
     let todo: String
     let completed: Bool
-    let targetDateTimestamp: Int
+    
+    var title: String {
+        MockTodoTitle.buy.title
+    }
     
     var targetDate: Date {
-        Date(timeIntervalSince1970: TimeInterval(targetDateTimestamp))
+        Date()
     }
     
     // MARK: - Initialization
     
-    init(id: Int, todo: String, completed: Bool) {
-        self.id = id
-        self.title = MockTodoTitle.allCases.randomElement()?.title ?? ""
-        self.todo = todo
-        self.completed = completed
-        
-        let currentDate = Date()
-        let randomInterval: TimeInterval = Double.random(in: -172800...172800) // 2 дня
-        let randomTimestamp = currentDate.addingTimeInterval(randomInterval)
-        self.targetDateTimestamp = Int(randomTimestamp.timeIntervalSince1970)
-    }
+//    init(id: Int, todo: String, completed: Bool) {
+//        self.id = id
+//        self.title = MockTodoTitle.allCases.randomElement()?.title ?? ""
+//        self.todo = todo
+//        self.completed = completed
+//        
+//        let currentDate = Date()
+//        let randomInterval: TimeInterval = Double.random(in: -172800...172800) // 172800 сек = 2 дня
+//        let randomTimestamp = currentDate.addingTimeInterval(randomInterval)
+//        self.targetDateTimestamp = Int(randomTimestamp.timeIntervalSince1970)
+//    }
 }
 
 // MARK: - Mocks
@@ -51,4 +53,10 @@ enum MockTodoTitle: CaseIterable {
         case .chill: return "Отдохнуть на диване"
         }
     }
+}
+
+// MARK: - TodosDTO
+
+struct TodosDTO: Decodable {
+    let todos: [TodoDTO]
 }

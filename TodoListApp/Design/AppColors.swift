@@ -23,6 +23,7 @@ enum AppColors {
     enum Background {
         static let bg1 = UIColor(named: "bg1")!
         static let bg2 = UIColor(named: "bg2")!
+        static let bg3 = UIColor(named: "bg3")!
         static let errorBg = UIColor(named: "errorBg")!
     }
 }
