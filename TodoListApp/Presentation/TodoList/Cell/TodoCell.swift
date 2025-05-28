@@ -20,44 +20,7 @@ final class TodoCell: UITableViewCell {
         return imageView
     }()
     
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = AppFonts.headline1.withSize(20)
-        label.textColor = AppColors.Text.text1
-        label.numberOfLines = 1
-        return label
-    }()
-    
-    private lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = AppFonts.text1.withSize(16)
-        label.textColor = AppColors.Text.text1
-        label.numberOfLines = 2
-        return label
-    }()
-    
-    private lazy var targetDateLabel: UILabel = {
-        let label = UILabel()
-        label.font = AppFonts.text1.withSize(16)
-        label.textColor = AppColors.Text.text2
-        label.numberOfLines = 2
-        return label
-    }()
-    
-    private lazy var VStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [
-            titleLabel,
-            descriptionLabel,
-            targetDateLabel
-        ])
-        
-        stack.axis = .vertical
-        stack.alignment = .leading
-        stack.distribution = .fillEqually
-        stack.spacing = .spacingS
-        
-        return stack
-    }()
+    private lazy var todoView = TodoView()
     
     // MARK: - Initialization
     
@@ -76,9 +39,7 @@ final class TodoCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         completeIcon.image = nil
-        titleLabel.text = nil
-        descriptionLabel.text = nil
-        targetDateLabel.text = nil
+        todoView.prepareForReuse()
     }
     
     // MARK: - Private Methods
@@ -98,38 +59,12 @@ final class TodoCell: UITableViewCell {
             $0.size.equalTo(CGFloat.contentSizeXL)
         }
         
-        containerView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
+        containerView.addSubview(todoView)
+        todoView.snp.makeConstraints {
+            $0.verticalEdges.equalToSuperview()
             $0.left.equalTo(completeIcon.snp.right).offset(CGFloat.contentMarginS)
             $0.right.equalToSuperview().inset(CGFloat.contentMarginS)
         }
-        
-        containerView.addSubview(descriptionLabel)
-        descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(CGFloat.contentMarginS)
-            $0.left.equalTo(completeIcon.snp.right).offset(CGFloat.contentMarginS)
-            $0.right.equalToSuperview().inset(CGFloat.contentMarginS)
-        }
-        
-        containerView.addSubview(targetDateLabel)
-        targetDateLabel.snp.makeConstraints {
-            $0.top.equalTo(descriptionLabel.snp.bottom).offset(CGFloat.contentMarginS)
-            $0.left.equalTo(completeIcon.snp.right).offset(CGFloat.contentMarginS)
-            $0.right.equalToSuperview().inset(CGFloat.contentMarginS)
-            $0.bottom.equalToSuperview()
-        }
-    }
-    
-    private func updateStates(by isCompleted: Bool) {
-        titleLabel.textColor = isCompleted ? AppColors.Text.text2 : AppColors.Text.text1
-        
-        let text = titleLabel.text ?? ""
-        let attributedString = NSAttributedString(string: text,
-                                                  attributes: isCompleted ? [.strikethroughStyle: NSUnderlineStyle.single.rawValue] : nil)
-        titleLabel.attributedText = attributedString
-        descriptionLabel.textColor = isCompleted ? AppColors.Text.text2 : AppColors.Text.text1
-        targetDateLabel.textColor = AppColors.Text.text2
     }
 }
 
@@ -139,22 +74,12 @@ extension TodoCell: ConfigurableAndReusable {
     
     func config(with model: TodoModel) {
         completeIcon.image = UIImage(named: model.completed ? "completedMark" : "notCompletedMark")
-        titleLabel.text = model.title
-        descriptionLabel.text = model.todo
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd/MM/yyyy"
-        let formattedDate = dateFormatter.string(from: model.targetDate)
-        targetDateLabel.text = formattedDate
-        
-        updateStates(by: model.completed)
+        todoView.config(with: model)
     }
     
     func configForShimmer() {
         completeIcon.image = UIImage(named: "notCompletedMark")
-        titleLabel.text = "ShimmerTextTextMedium"
-        descriptionLabel.text = "ShimmerTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextVeryLong"
-        targetDateLabel.text = "ShimmerShort"
+        todoView.configForShimmer()
     }
 }
 
@@ -163,6 +88,6 @@ extension TodoCell: ConfigurableAndReusable {
 extension TodoCell: ShimmeringViewProtocol {
     
     var shimmeringAnimatedItems: [UIView] {
-        [completeIcon, titleLabel, descriptionLabel, targetDateLabel]
+        [completeIcon]
     }
 }
