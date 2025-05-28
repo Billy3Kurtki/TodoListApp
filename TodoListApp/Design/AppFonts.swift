@@ -9,6 +9,7 @@ import UIKit
 
 enum AppFonts {
     static let headline1 = UIFont(name: "Roboto-Regular", size: 22)!
+    static let headline1Bold = UIFont(name: "Roboto-Bold", size: 22)!
     static let headline2 = UIFont(name: "Roboto-Regular", size: 20)!
     static let headline3 = UIFont(name: "Roboto-Regular", size: 18)!
     

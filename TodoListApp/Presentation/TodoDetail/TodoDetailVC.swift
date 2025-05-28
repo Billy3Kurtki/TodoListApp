@@ -8,13 +8,14 @@
 import UIKit
 
 private enum Const {
-    static let navbarHeight: CGFloat = 158
+    static let navbarHeight: CGFloat = 108
 }
 
 protocol ITodoDetailView: IBaseView {
     
     func setValue(_ value: String, for type: TodoFields)
     func updateIsCompletedState(_ state: Bool)
+    func hideCompleteButton()
 }
 
 final class TodoDetailVC: UIViewController {
@@ -28,7 +29,7 @@ final class TodoDetailVC: UIViewController {
     private lazy var titleField: CustomTextField = {
         let field = CustomTextField()
         field.textColor = AppColors.Text.text1
-        field.font = AppFonts.headline1.withSize(35)
+        field.font = AppFonts.headline1Bold.withSize(35)
         field.placeholder = "Название"
         field.setupDelegate()
         field.valueChanged = { [weak self] newText in
@@ -41,8 +42,8 @@ final class TodoDetailVC: UIViewController {
     private lazy var dateField: UIButton = {
         let button = UIButton()
         button.setTitle("Дата", for: .normal)
-        button.titleLabel?.font = AppFonts.text1.withSize(20)
-        button.titleLabel?.textColor = AppColors.Text.text2
+        button.titleLabel?.font = AppFonts.text1.withSize(15)
+        button.setTitleColor(AppColors.Text.text2, for: .normal)
         button.titleLabel?.textAlignment = .left
         button.addTarget(self, action: #selector(dateFieldTapped), for: .touchUpInside)
         return button
@@ -52,6 +53,7 @@ final class TodoDetailVC: UIViewController {
         let field = CustomTextView()
         field.textColor = AppColors.Text.text1
         field.font = AppFonts.text1.withSize(20)
+        field.contentInset = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 0)
         field.setupDelegate()
         field.valueChanged = { [weak self] newText in
             self?.presenter.setText(newText, for: .todo)
@@ -86,9 +88,15 @@ final class TodoDetailVC: UIViewController {
         presenter.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationItem.largeTitleDisplayMode = .never
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         presenter.viewDidDisappear()
+        navigationItem.largeTitleDisplayMode = .automatic
     }
     
     // MARK: - Private Methods
@@ -123,6 +131,7 @@ final class TodoDetailVC: UIViewController {
     }
     
     private func setupNavigationBar() {
+        navigationItem.titleView?.isHidden = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: completeButton)
     }
     
@@ -152,5 +161,9 @@ extension TodoDetailVC: ITodoDetailView {
     
     func updateIsCompletedState(_ state: Bool) {
         completeButton.setImage(UIImage(named: state ? "completedMark" : "notCompletedMark"), for: .normal)
+    }
+    
+    func hideCompleteButton() {
+        completeButton.isHidden = true
     }
 }

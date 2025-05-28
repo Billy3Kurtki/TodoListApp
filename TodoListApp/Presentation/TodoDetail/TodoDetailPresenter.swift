@@ -55,6 +55,11 @@ final class TodoDetailPresenter {
     }
     
     private func setupFields() {
+        guard !fields.isEmpty else {
+            view?.hideCompleteButton()
+            return
+        }
+        
         for (type, value) in fields {
             switch value {
             case is String: view?.setValue(value as? String ?? "", for: type)

@@ -158,6 +158,7 @@ extension TodoListVC: ITodoListView {
     
     func insertRow(at indexPath: IndexPath) {
         tableView.insertRows(at: [indexPath], with: .automatic)
+        updateFooterView()
     }
 }
 
