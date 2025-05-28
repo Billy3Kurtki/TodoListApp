@@ -17,6 +17,8 @@ protocol ITodoListView: IBaseView {
     
     func showAlert(with error: IAppError)
     func reloadData()
+    func reloadRow(at indexPath: IndexPath)
+    func insertRow(at indexPath: IndexPath)
 }
 
 final class TodoListVC: UIViewController {
@@ -148,6 +150,14 @@ extension TodoListVC: ITodoListView {
         refreshControl.endRefreshing()
         tableView.reloadData()
         updateFooterView()
+    }
+    
+    func reloadRow(at indexPath: IndexPath) {
+        tableView.reloadRows(at: [indexPath], with: .fade)
+    }
+    
+    func insertRow(at indexPath: IndexPath) {
+        tableView.insertRows(at: [indexPath], with: .automatic)
     }
 }
 

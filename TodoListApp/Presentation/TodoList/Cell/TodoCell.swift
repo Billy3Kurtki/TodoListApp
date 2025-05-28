@@ -137,7 +137,7 @@ final class TodoCell: UITableViewCell {
 
 extension TodoCell: ConfigurableAndReusable {
     
-    func config(with model: TodoDTO) {
+    func config(with model: TodoModel) {
         completeIcon.image = UIImage(named: model.completed ? "completedMark" : "notCompletedMark")
         titleLabel.text = model.title
         descriptionLabel.text = model.todo

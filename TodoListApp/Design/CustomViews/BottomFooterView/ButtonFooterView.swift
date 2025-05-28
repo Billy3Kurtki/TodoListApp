@@ -98,7 +98,7 @@ final class ButtonFooterView: UIView {
     
     @objc
     private func rightAction() throws {
-        leftButtonAction?()
+        rightButtonAction?()
     }
 }
 

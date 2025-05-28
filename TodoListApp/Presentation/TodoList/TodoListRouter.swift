@@ -9,7 +9,7 @@ import UIKit
 
 protocol ITodoListRouter: AnyObject {
     
-    func openTodoDetailModule(with todo: TodoDTO) throws
+    func openTodoDetailModule(with todo: TodoModel?, completion: @escaping TodoAction) throws
 }
 
 final class TodoListRouter: ITodoListRouter {
@@ -23,9 +23,10 @@ final class TodoListRouter: ITodoListRouter {
     
     // MARK: - Internal Methods
     
-    func openTodoDetailModule(with todo: TodoDTO) throws {
-//        guard let navigationController = viewController?.navigationController else { fatalError() }
-//        let vc = TodoDetailAssembly()
-//        navigationController.pushViewController(vc, animated: true)
+    func openTodoDetailModule(with todo: TodoModel?,
+                              completion: @escaping TodoAction) throws {
+        guard let navigationController = viewController?.navigationController else { fatalError() }
+        let vc = TodoDetailAssembly().createModule(todo, completion: completion)
+        navigationController.pushViewController(vc, animated: true)
     }
 }

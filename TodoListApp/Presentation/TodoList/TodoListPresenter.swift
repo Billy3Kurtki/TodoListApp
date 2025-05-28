@@ -11,7 +11,7 @@ protocol ITodoListPresenter: AnyObject {
     
     var view: ITodoListView? { get set }
     var isLoading: Bool { get }
-    var filteredTodos: [TodoDTO] { get }
+    var filteredTodos: [TodoModel] { get }
     func viewDidLoad()
     func pullToRefresh()
     func searchTextChanged(_ text: String)
@@ -27,8 +27,8 @@ final class TodoListPresenter {
     private let router: ITodoListRouter
     
     // Properties
-    private var todos = [TodoDTO]()
-    private(set) var filteredTodos = [TodoDTO]()
+    private var todos = [TodoModel]()
+    private(set) var filteredTodos = [TodoModel]()
     private(set) var isLoading = false
     private var searchText = ""
     
@@ -50,8 +50,8 @@ final class TodoListPresenter {
             guard let self else { return }
             switch result {
             case .success(let todos):
-                self.todos = todos
-                self.filteredTodos = !self.searchText.isEmpty ? todos.filter { $0.title.contains(self.searchText) } : todos
+                self.todos = todos.map { TodoModel(from: $0) }
+                self.filteredTodos = !self.searchText.isEmpty ? self.todos.filter { $0.title.contains(self.searchText) } : self.todos
                 self.isLoading = false
                 self.view?.reloadData()
             case .failure(let error):
@@ -83,10 +83,46 @@ extension TodoListPresenter: ITodoListPresenter {
     func todoDidTap(at indexPath: IndexPath) {
         print("todoDidTap")
         let todo = filteredTodos[indexPath.row]
-        try? router.openTodoDetailModule(with: todo)
+        try? router.openTodoDetailModule(with: todo) { [weak self] updatedTodo in
+            self?.filteredTodos[indexPath.row] = updatedTodo
+            if let index = self?.todos.firstIndex(where: { $0.id == updatedTodo.id }) {
+                self?.todos[index] = updatedTodo
+            }
+            // Update todo in database
+            self?.view?.reloadRow(at: indexPath)
+        }
     }
     
     func newTodoButtonDidTap() {
-        print("newTodoButtonDidTap()")
+        print("newTodoButtonDidTap")
+        try? router.openTodoDetailModule(with: nil) { [weak self] updatedTodo in
+            self?.filteredTodos.insert(updatedTodo, at: 0)
+            self?.todos.insert(updatedTodo, at: 0)
+            // Save todo in database
+            self?.view?.insertRow(at: IndexPath(row: 0, section: 0))
+        }
+    }
+}
+
+// MARK: - TodoModel
+
+struct TodoModel {
+    var id: Int
+    var title: String
+    var todo: String
+    var completed: Bool
+    var targetDate: Date
+}
+
+// MARK: - Additional Initialization from TodoDTO
+
+extension TodoModel {
+    
+    init(from dto: TodoDTO) {
+        self.id = dto.id
+        self.title = dto.title
+        self.todo = dto.todo
+        self.completed = dto.completed
+        self.targetDate = dto.targetDate
     }
 }
