@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TodoSnippet: UIView {
+final class TodoSnippetView: UIView {
     
     // UI
     private lazy var containerView: UIView = {
@@ -36,8 +36,7 @@ final class TodoSnippet: UIView {
     private func setupUI() {
         addSubview(containerView)
         containerView.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview()
-            $0.horizontalEdges.equalToSuperview().inset(CGFloat.contentMarginM)
+            $0.edges.equalToSuperview()
         }
         
         containerView.addSubview(todoView)
@@ -50,7 +49,7 @@ final class TodoSnippet: UIView {
 
 // MARK: - Configurable
 
-extension TodoSnippet: Configurable {
+extension TodoSnippetView: Configurable {
     
     func config(with model: TodoModel) {
         todoView.config(with: model)

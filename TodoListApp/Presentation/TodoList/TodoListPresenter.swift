@@ -17,6 +17,9 @@ protocol ITodoListPresenter: AnyObject {
     func searchTextChanged(_ text: String)
     func todoDidTap(at indexPath: IndexPath)
     func newTodoButtonDidTap()
+    func editButtonTapped(at indexPath: IndexPath)
+    func shareButtonTapped(at indexPath: IndexPath)
+    func deleteButtonTapped(at indexPath: IndexPath)
 }
 
 final class TodoListPresenter {
@@ -101,6 +104,18 @@ extension TodoListPresenter: ITodoListPresenter {
             // Save todo in database
             self?.view?.insertRow(at: IndexPath(row: 0, section: 0))
         }
+    }
+    
+    func editButtonTapped(at indexPath: IndexPath) {
+        todoDidTap(at: indexPath)
+    }
+    
+    func shareButtonTapped(at indexPath: IndexPath) {
+        print("shareButtonTapped")
+    }
+    
+    func deleteButtonTapped(at indexPath: IndexPath) {
+        print("deleteButtonTapped")
     }
 }
 

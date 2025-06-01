@@ -52,7 +52,7 @@ final class TodoListVC: UIViewController {
     }()
     
     private lazy var footerView = ButtonFooterView()
-
+    
     // MARK: - Initialization
     
     init(_ presenter: ITodoListPresenter) {
@@ -65,7 +65,7 @@ final class TodoListVC: UIViewController {
     }
     
     // MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -136,6 +136,33 @@ final class TodoListVC: UIViewController {
             return "\(count) задач"
         }
     }
+    
+    private func configuredPreviewController(at indexPath: IndexPath) -> UIViewController {
+        let previewView = TodoSnippetView()
+        previewView.config(with: self.presenter.filteredTodos[indexPath.row])
+        
+        let previewController = UIViewController()
+        previewController.view = previewView
+        
+        let cellRect = tableView.rectForRow(at: indexPath)
+        previewController.preferredContentSize = cellRect.size
+        
+        return previewController
+    }
+    
+    private func getConfiguredMenu(at indexPath: IndexPath) -> UIMenu {
+        UIMenu(title: "", children: [
+            UIAction(title: "Редактировать", image: UIImage(systemName: "square.and.pencil")) { [weak self] _ in
+                self?.presenter.editButtonTapped(at: indexPath)
+            },
+            UIAction(title: "Поделиться", image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
+                self?.presenter.shareButtonTapped(at: indexPath)
+            },
+            UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+                self?.presenter.deleteButtonTapped(at: indexPath)
+            }
+        ])
+    }
 }
 
 // MARK: - IWeatherView
@@ -202,5 +229,21 @@ extension TodoListVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.setTemplateWithSubviews(presenter.isLoading, viewBackgroundColor: .lightGray)
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: { () -> UIViewController? in
+                self.configuredPreviewController(at: indexPath)
+            },
+            actionProvider: { _ in
+                self.getConfiguredMenu(at: indexPath)
+            }
+        )
     }
 }
