@@ -82,7 +82,7 @@ final class TodoView: UIView {
         
         let text = titleLabel.text ?? ""
         let attributedString = NSAttributedString(string: text,
-                                                  attributes: isCompleted ? [.strikethroughStyle: NSUnderlineStyle.single.rawValue] : nil)
+                                                  attributes: [.strikethroughStyle: isCompleted ? NSUnderlineStyle.single.rawValue : 0])
         titleLabel.attributedText = attributedString
         descriptionLabel.textColor = isCompleted ? AppColors.Text.text2 : AppColors.Text.text1
         targetDateLabel.textColor = AppColors.Text.text2

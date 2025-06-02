@@ -9,10 +9,12 @@
 /* Begin PBXBuildFile section */
 		0866DAB82DE1070C00A9D92B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0866DAB72DE1070C00A9D92B /* SnapKit */; };
 		0866DABD2DE1072400A9D92B /* UIView-Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 0866DABC2DE1072400A9D92B /* UIView-Shimmer */; };
+		0866DB592DED179000A9D92B /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0866DB572DED179000A9D92B /* CoreData.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0866DA632DE0E81800A9D92B /* TodoListApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoListApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0866DB582DED179000A9D92B /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -52,6 +54,7 @@
 		0866DA5A2DE0E81800A9D92B = {
 			isa = PBXGroup;
 			children = (
+				0866DB572DED179000A9D92B /* CoreData.xcdatamodeld */,
 				0866DA652DE0E81800A9D92B /* TodoListApp */,
 				0866DA642DE0E81800A9D92B /* Products */,
 			);
@@ -145,6 +148,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0866DB592DED179000A9D92B /* CoreData.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,6 +386,19 @@
 			productName = "UIView-Shimmer";
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		0866DB572DED179000A9D92B /* CoreData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				0866DB582DED179000A9D92B /* CoreData.xcdatamodel */,
+			);
+			currentVersion = 0866DB582DED179000A9D92B /* CoreData.xcdatamodel */;
+			path = CoreData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 0866DA5B2DE0E81800A9D92B /* Project object */;
 }

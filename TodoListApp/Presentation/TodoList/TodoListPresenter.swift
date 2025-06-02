@@ -34,6 +34,7 @@ final class TodoListPresenter {
     private(set) var filteredTodos = [TodoModel]()
     private(set) var isLoading = false
     private var searchText = ""
+    private let defaults = UserDefaults.standard
     
     // MARK: - Initialization
     
@@ -49,18 +50,43 @@ final class TodoListPresenter {
         isLoading = true
         view?.reloadData()
         
-        interactor.getTodos(from: .network) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let todos):
-                self.todos = todos.map { TodoModel(from: $0) }
-                self.filteredTodos = !self.searchText.isEmpty ? self.todos.filter { $0.title.contains(self.searchText) } : self.todos
-                self.isLoading = false
-                self.view?.reloadData()
-            case .failure(let error):
-                self.view?.showAlert(with: error)
+        if defaults.bool(forKey: "networkDataDidLoad") {
+            interactor.getTodos(from: .storage) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let todos):
+                    self.todos = todos
+                    self.filteredTodos = !self.searchText.isEmpty ? self.todos.filter { $0.title.contains(self.searchText) } : self.todos
+                    self.isLoading = false
+                    self.view?.reloadData()
+                case .failure(let error):
+                    self.view?.showAlert(with: error)
+                }
+            }
+        } else {
+            interactor.getTodos(from: .network) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let todos):
+                    self.todos = todos
+                    self.filteredTodos = !self.searchText.isEmpty ? self.todos.filter { $0.title.contains(self.searchText) } : self.todos
+                    self.interactor.saveTodos(to: .storage, todos) // First Save to Database from Network
+                    self.defaults.set(true, forKey: "networkDataDidLoad")
+                    self.isLoading = false
+                    self.view?.reloadData()
+                case .failure(let error):
+                    self.view?.showAlert(with: error)
+                }
             }
         }
+    }
+    
+    private func deleteTodo(at indexPath: IndexPath) {
+        let todo = filteredTodos[indexPath.row]
+        filteredTodos.remove(at: indexPath.row)
+        todos.removeAll(where: { $0.id == todo.id })
+        interactor.deleteTodo(by: todo.id)
+        view?.deleteRow(at: indexPath)
     }
 }
 
@@ -84,24 +110,22 @@ extension TodoListPresenter: ITodoListPresenter {
     }
     
     func todoDidTap(at indexPath: IndexPath) {
-        print("todoDidTap")
         let todo = filteredTodos[indexPath.row]
         try? router.openTodoDetailModule(with: todo) { [weak self] updatedTodo in
             self?.filteredTodos[indexPath.row] = updatedTodo
             if let index = self?.todos.firstIndex(where: { $0.id == updatedTodo.id }) {
                 self?.todos[index] = updatedTodo
             }
-            // Update todo in database
+            self?.interactor.updateTodo(updatedTodo)
             self?.view?.reloadRow(at: indexPath)
         }
     }
     
     func newTodoButtonDidTap() {
-        print("newTodoButtonDidTap")
-        try? router.openTodoDetailModule(with: nil) { [weak self] updatedTodo in
-            self?.filteredTodos.insert(updatedTodo, at: 0)
-            self?.todos.insert(updatedTodo, at: 0)
-            // Save todo in database
+        try? router.openTodoDetailModule(with: nil) { [weak self] newTodo in
+            self?.filteredTodos.insert(newTodo, at: 0)
+            self?.todos.insert(newTodo, at: 0)
+            self?.interactor.createTodo(newTodo)
             self?.view?.insertRow(at: IndexPath(row: 0, section: 0))
         }
     }
@@ -115,14 +139,14 @@ extension TodoListPresenter: ITodoListPresenter {
     }
     
     func deleteButtonTapped(at indexPath: IndexPath) {
-        print("deleteButtonTapped")
+        deleteTodo(at: indexPath)
     }
 }
 
 // MARK: - TodoModel
 
 struct TodoModel {
-    var id: Int
+    let id: Int
     var title: String
     var todo: String
     var completed: Bool
@@ -139,5 +163,13 @@ extension TodoModel {
         self.todo = dto.todo
         self.completed = dto.completed
         self.targetDate = dto.targetDate
+    }
+    
+    init(from dbo: TodoDBO) {
+        self.id = Int(dbo.id)
+        self.title = dbo.title
+        self.todo = dbo.todo
+        self.completed = dbo.completed
+        self.targetDate = dbo.targetDate
     }
 }

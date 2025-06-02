@@ -24,7 +24,9 @@ extension CustomTextField: UITextFieldDelegate {
     func textField(_ textField: UITextField,
                    shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        valueChanged?(string)
+        guard let text = textField.text else { return false }
+        let newText = (text as NSString).replacingCharacters(in: range, with: string)
+        valueChanged?(newText)
         return true
     }
 }

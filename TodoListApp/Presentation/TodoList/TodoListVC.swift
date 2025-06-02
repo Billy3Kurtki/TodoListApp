@@ -19,6 +19,7 @@ protocol ITodoListView: IBaseView {
     func reloadData()
     func reloadRow(at indexPath: IndexPath)
     func insertRow(at indexPath: IndexPath)
+    func deleteRow(at indexPath: IndexPath)
 }
 
 final class TodoListVC: UIViewController {
@@ -185,6 +186,11 @@ extension TodoListVC: ITodoListView {
     
     func insertRow(at indexPath: IndexPath) {
         tableView.insertRows(at: [indexPath], with: .automatic)
+        updateFooterView()
+    }
+    
+    func deleteRow(at indexPath: IndexPath) {
+        tableView.deleteRows(at: [indexPath], with: .automatic)
         updateFooterView()
     }
 }
