@@ -19,18 +19,22 @@ protocol ITodoListInteractor: AnyObject {
 final class TodoListInteractor {
     
     // Dependencies
-    private let networkService = NetworkService.shared
-    private let storageService = StorageService.shared
+    private let todoListService: ITodoListService
+    private let storageService: IStorageService
     
     // MARK: - Initialization
     
-    init() { }
+    init(_ todoListService: ITodoListService = TodoListService.shared,
+         _ storageService: IStorageService = StorageService.shared) {
+        self.todoListService = todoListService
+        self.storageService = storageService
+    }
     
     // MARK: - Private Methods
     
     // Network
     private func getTodosFromNetwork(completion: @escaping (Result<TodosDTO, NetworkError>) -> Void) {
-        networkService.fetch(urlString: TodoTarget.getTodos.url, TodosDTO.self, completion: completion)
+        todoListService.getTodos(completion: completion)
     }
     
     // Storage

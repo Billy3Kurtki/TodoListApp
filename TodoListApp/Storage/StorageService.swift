@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-// TODO: Переписать на дженерики
+// TODO: Переписать на дженерики, добавить TodoListStorage
 protocol IStorageService {
     
     func fetchTodos() -> [TodoDBO]
@@ -34,8 +34,6 @@ final class StorageService {
     // MARK: - Initialization
     
     private init() {}
-    
-    // MARK: - Private Methods
 }
 
 // MARK: - IStorageService
